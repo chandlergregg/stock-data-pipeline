@@ -1,0 +1,5 @@
+azcopy make 'https://cdgreggstockproj.blob.core.windows.net/stock-proj-data'
+
+<container-name> = stock-proj-data
+
+'https://cdgreggstockproj.blob.core.windows.net/stock-proj-data'
