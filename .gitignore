@@ -14,3 +14,6 @@ __pycache__
 # Ignore dot file extensions of Parquet parts, success files
 .part*
 ._SUCCESS*
+
+# Other
+.DS_Store
