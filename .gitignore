@@ -1,0 +1,16 @@
+# Ignore pipenv files
+Pip*
+
+# Ignore __pycache__, pytest
+__pycache__
+.pytest*
+
+# Ignore vscode
+.vscode
+
+# Ignore iPython
+.ipynb*
+
+# Ignore dot file extensions of Parquet parts, success files
+.part*
+._SUCCESS*

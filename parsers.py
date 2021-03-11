@@ -89,7 +89,6 @@ def parse_json(line: str) -> str:
         ask_size = None
         trade_pr = None
 
-
         trade_dt = datetime.datetime.strptime(record_dict['trade_dt'], '%Y-%m-%d')
         symbol = record_dict['symbol']
         exchange = record_dict['exchange']
