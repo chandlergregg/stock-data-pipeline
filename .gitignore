@@ -15,5 +15,8 @@ __pycache__
 .part*
 ._SUCCESS*
 
+# Ignore config files
+*.cfg
+
 # Other
 .DS_Store

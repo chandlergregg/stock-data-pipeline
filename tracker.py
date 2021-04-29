@@ -1,61 +1,99 @@
- import datetime
- import psycopg2
+import datetime
+import psycopg2
+import uuid
+from configreader import ConfigReader
 
- class Tracker(object):
-     """
-     job_id, status, updated_time
-     """
-     def __init__(self, jobname, dbconfig):
-         self.jobname = jobname
-         self.dbconfig = dbconfig
-
-    def assign_job_id(self):
-        # [Construct the job ID and assign to the return variable]
-        return job_id
-
-    def update_job_status(self, status):
-
-        job_id = self.assign_job_id()
-        print(f"Job ID assigned: {job_id}")
-        update_time = datetime.datetime.now()
-        table_name = self.dbconfig.get("postgres", "job_tracker_table_name")
-        connection = self.get_db_connection()
-
-        try:
-            # [ Execute the SQL statement to insert to job status table ]
-        except (Exception, psycopg2.Error) as error:
-            print("Error executing DB statement for job tracker.")
-        return
-
-    def get_job status(self, job_id)
-        # Connect db and send SQL query
-        table_name = self.dbconfig.get("postgres", "job_tracker_table_name")
-        connection = self.get_db_connection()
-        try:
-            record = # [ Execute SQL query to get the record ]
-            return record
-        except (Exception, psycopg2.Error) as error:
-            print("Error executing DB statement for job tracker.")
-        return
+class Tracker(object):
+    """
+    Tracks job statuses by initializing them and updating them
+    """
+    def __init__(self, job_name, db_config):    
+        """
+        Initializes tracker with given job_name and config
+        Generates random job_id and inserts "Running" status into db
+        """
+        self.job_name = job_name
+        self.db_config = db_config
+        self.job_id = self.generate_job_id()
+        self.initialize_job_status()
+    
+    def generate_job_id(self):
+        return str(uuid.uuid4())
 
     def get_db_connection(self):
+        """
+        Try to establish connection with db and return connection if successful
+        """
         connection = None
         try:
-            connection = # [ Initialize DB connection ]
+            connection = psycopg2.connect(**self.db_config)
+            print("Connected to Postgres")
         except (Exception, psycopg2.Error) as error:
-            print("Error while connecitng to PostgreSQL", error)
-
+            print("Error while connecting to Postgres", error)
+        
         return connection
 
-def run_reporter_etl(my_config):
-    trade_date = my_config.get('production', 'processing_date')
-    reporter = Reporter(spark, my_config)
+    def __insert_into_db(self, status):
+        """
+        Insert records into db table with provided status
+        """
+        # Get connection and cursor
+        connection = self.get_db_connection()
+        cursor = connection.cursor()
+        
+        # Prepare query and values
+        query = f"""
+            INSERT INTO stock_proj.pipeline_job_status (job_name, job_status_timestamp, job_status, job_id)
+            VALUES (%s, %s, %s, %s);
+        """
+        values = (self.job_name, datetime.datetime.now(), status, self.job_id)
 
-    tracker = Tracker('analytical_etl', my_config)
-    try:
-        reporter.report(spark, trade_date, eod_dir)
-        tracker.update_job_status("success")
-    except Exception as e:
-        print(e)
-        tracker.update_job_status("failed")
-    return
+        # Try insert, otherwise error out
+        try:
+            cursor.execute(query, values)
+            connection.commit()
+        except (Exception, psycopg2.Error) as error:
+            print("Error while inserting into Postgres:", error)
+
+        # Close cursor and connection
+        cursor.close()
+        connection.close()
+
+    def initialize_job_status(self):
+        """
+        Initialize job by inserting "Started" record into db
+        """
+        self.__insert_into_db("Started")
+        print("Job status initialized")
+
+    def update_job_status(self, status):
+        """
+        Insert updated job status into db
+        """
+        self.__insert_into_db(status)
+        print(f"Job status updated to '{status}'")
+
+
+def main():
+    reader = ConfigReader("config.cfg", "postgres")
+    db_config = reader.get_config()
+    tracker = Tracker("Test job", db_config)
+
+if __name__ == "__main__":
+    main()
+    
+
+# def run_reporter_etl(my_config):
+#     trade_date = my_config.get('production', 'processing_date')
+#     reporter = Reporter(spark, my_config)
+
+#     tracker = Tracker('analytical_etl', my_config)
+#     try:
+#         # First, 
+
+#         reporter.report(spark, trade_date, eod_dir)
+#         tracker.update_job_status("success")
+#     except Exception as e:
+#         print(e)
+#         tracker.update_job_status("failed")
+#     return
