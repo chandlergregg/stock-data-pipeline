@@ -1,5 +1,5 @@
 # Ignore pipenv files
-Pip*
+Pipf*
 
 # Ignore __pycache__, pytest
 __pycache__
