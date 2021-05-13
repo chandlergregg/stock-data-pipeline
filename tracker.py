@@ -14,20 +14,19 @@ class Tracker(object):
         """
         self.job_name = job_name
         self.db_config = db_config
-        self.job_id = self.generate_job_id()
-        self.initialize_job_status()
+        self.job_id = self.__generate_job_id()
+        self.__initialize_job_status()
     
-    def generate_job_id(self):
+    def __generate_job_id(self):
         return str(uuid.uuid4())
 
-    def get_db_connection(self):
+    def __get_db_connection(self):
         """
         Try to establish connection with db and return connection if successful
         """
         connection = None
         try:
             connection = psycopg2.connect(**self.db_config)
-            print("Connected to Postgres")
         except (Exception, psycopg2.Error) as error:
             print("Error while connecting to Postgres", error)
         
@@ -38,7 +37,7 @@ class Tracker(object):
         Insert records into db table with provided status
         """
         # Get connection and cursor
-        connection = self.get_db_connection()
+        connection = self.__get_db_connection()
         cursor = connection.cursor()
         
         # Prepare query and values
@@ -59,12 +58,12 @@ class Tracker(object):
         cursor.close()
         connection.close()
 
-    def initialize_job_status(self):
+    def __initialize_job_status(self):
         """
         Initialize job by inserting "Started" record into db
         """
         self.__insert_into_db("Started")
-        print("Job status initialized")
+        print(f"Job status initialized for: {self.job_name}")
 
     def update_job_status(self, status):
         """
@@ -72,7 +71,6 @@ class Tracker(object):
         """
         self.__insert_into_db(status)
         print(f"Job status updated to '{status}'")
-
 
 def main():
     reader = ConfigReader("config.cfg", "postgres")
@@ -82,6 +80,8 @@ def main():
 if __name__ == "__main__":
     main()
     
+
+
 
 # def run_reporter_etl(my_config):
 #     trade_date = my_config.get('production', 'processing_date')

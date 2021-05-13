@@ -60,7 +60,7 @@ def parse_csv(line: str) -> str:
             trade_pr, bid_pr, bid_size, ask_pr, ask_size, partition]
     
     except Exception as e:
-       
+    
         # If anything goes wrong, output empty record with "B" partition
         # empty_str = "," * (COMMON_EVENT_COLUMN_COUNT - 1)
         # return f"{empty_str}B".split(",")
@@ -89,6 +89,7 @@ def parse_json(line: str) -> str:
         ask_size = None
         trade_pr = None
 
+
         trade_dt = datetime.datetime.strptime(record_dict['trade_dt'], '%Y-%m-%d')
         symbol = record_dict['symbol']
         exchange = record_dict['exchange']
@@ -110,21 +111,9 @@ def parse_json(line: str) -> str:
             trade_pr, bid_pr, bid_size, ask_pr, ask_size, partition]
     
     except Exception as e:
-       
+    
         # If anything goes wrong, output empty record with "B" partition
         # empty_str = "," * (COMMON_EVENT_COLUMN_COUNT - 1)
         # return f"{empty_str}B".split(",")
 
         return [ None for i in range(COMMON_EVENT_COLUMN_COUNT - 1) ] + ['B']
-
-# print(parse_csv("""2020-08-05,2020-08-05 09:30:00.0,Q,SYMA,2020-08-05 09:34:51.505,1,NYSE,75.30254839137037,100,75.35916738004924,100"""))
-# print(parse_csv("""2020-08-05,2020-08-05 09:30:00.0,T,SYMA,2020-08-05 10:37:21.581,10,NYSE,79.19488165597565,912"""))
-
-# print(parse_json("""{"trade_dt":"2020-08-05","file_tm":"2020-08-05 09:30:00.000","event_type":"T","symbol":"SYMA","execution_id":"EX-10","event_tm":"2020-08-05 10:38:50.046","event_seq_nb":10,"exchange":"NASDAQ","price":77.77570455205036,"size":509}"""))
-# print(parse_json("""{"trade_dt":"2020-08-05","file_tm":"2020-08-05 09:30:00.000","event_type":"Q","symbol":"SYMA","event_tm":"2020-08-05 09:36:55.284","event_seq_nb":1,"exchange":"NASDAQ","bid_pr":76.10016521142818,"bid_size":100,"ask_pr":77.9647975908747,"ask_size":100}"""))
-
-# 2020-08-05,2020-08-05 09:30:00.0,Q,SYMA,2020-08-05 09:34:51.505,1,NYSE,75.30254839137037,100,75.35916738004924,100
-# 2020-08-05,2020-08-05 09:30:00.0,T,SYMA,2020-08-05 10:37:21.581,10,NYSE,79.19488165597565,912
-
-# {"trade_dt":"2020-08-05","file_tm":"2020-08-05 09:30:00.000","event_type":"T","symbol":"SYMA","execution_id":"EX-10","event_tm":"2020-08-05 10:38:50.046","event_seq_nb":10,"exchange":"NASDAQ","price":77.77570455205036,"size":509}
-# {"trade_dt":"2020-08-05","file_tm":"2020-08-05 09:30:00.000","event_type":"Q","symbol":"SYMA","event_tm":"2020-08-05 09:36:55.284","event_seq_nb":1,"exchange":"NASDAQ","bid_pr":76.10016521142818,"bid_size":100,"ask_pr":77.9647975908747,"ask_size":100}
