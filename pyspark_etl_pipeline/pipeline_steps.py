@@ -1,5 +1,5 @@
 from pyspark.sql.types import *
-from parsers import parse_line
+from pyspark_etl_pipeline.parsers import parse_line
 from datetime import datetime, timedelta
 
 class PipelineStep:

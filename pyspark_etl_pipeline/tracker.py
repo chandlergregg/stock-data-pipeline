@@ -1,7 +1,7 @@
 import datetime
 import psycopg2
 import uuid
-from configreader import ConfigReader
+from pyspark_etl_pipeline.configreader import ConfigReader
 
 class Tracker(object):
     """

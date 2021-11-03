@@ -1,7 +1,7 @@
 from pyspark.sql import SparkSession
-from configreader import ConfigReader
-from pipeline_steps import *
-from tracker import Tracker
+from pyspark_etl_pipeline.configreader import ConfigReader
+from pyspark_etl_pipeline.pipeline_steps import *
+from pyspark_etl_pipeline.tracker import Tracker
 
 def main():
     

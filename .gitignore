@@ -1,6 +1,3 @@
-# Ignore pipenv files
-Pipf*
-
 # Ignore __pycache__, pytest
 __pycache__
 .pytest*
