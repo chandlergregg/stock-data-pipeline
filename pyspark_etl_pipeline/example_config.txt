@@ -1,0 +1,20 @@
+[postgres]
+host = <postgres host name>
+port = <port>
+dbname = <database name>
+user = <username>
+password = <password>
+
+[databricks]
+workspace_url = <url for the Azure Databricks workspace>
+databricks_access_token = <Databricks access token>
+cluster_name = <name of the Databricks cluster to be used>
+cluster_id = <cluster id>
+port = <port>
+org_id = <org id (found in URL)>
+
+[azure-storage]
+account_name = <storage account name>
+access_key = <access key for storage account>
+container_name = <container_name>
+mount_root = <root file path for storage mounted to Databricks>

@@ -1,9 +1,9 @@
 import datetime
 import psycopg2
 import uuid
-from pyspark_etl_pipeline.configreader import ConfigReader
+from configreader import ConfigReader
 
-class Tracker(object):
+class Tracker:
     """
     Tracks job statuses by initializing them and updating them
     """
@@ -72,28 +72,52 @@ class Tracker(object):
         self.__insert_into_db(status)
         print(f"Job status updated to '{status}'")
 
+class Reporter:
+
+    def __init__(self, db_config, job_ids):
+        # Get jobids to query
+        self.job_ids = job_ids
+        self.db_config = db_config
+
+    def get_report(self):
+         # Get connection and cursor
+        connection = None
+        try:
+            connection = psycopg2.connect(**self.db_config)
+        except (Exception, psycopg2.Error) as error:
+            print("Error while connecting to Postgres", error)
+
+        cursor = connection.cursor()
+
+        # Attempt query and get results
+        query = f"""
+            SELECT * FROM stock_proj.pipeline_job_status
+            WHERE job_id IN %(job_ids)s
+            ORDER BY job_status_timestamp
+        """
+        try:
+            cursor.execute(query, {"job_ids": tuple(self.job_ids)})
+            results = cursor.fetchall()
+        except (Exception, psycopg2.Error) as error:
+            print("Error while querying Postgres:", error)
+
+        # Close cursor and connection
+        cursor.close()
+        connection.close()
+
+        print("""| job_name \t | job_status_timestamp \t | job_status \t | job_id \t |""")
+        for row in results:
+            print(f"""{row[1]} | {row[2]} | {row[3]} | {row[4]}""")
+
+# Code for testing tracker
 def main():
     reader = ConfigReader("config.cfg", "postgres")
     db_config = reader.get_config()
     tracker = Tracker("Test job", db_config)
+    reporter = Reporter(db_config, ["b0ca6902-8d7b-49a2-9a17-b94e42e839fc",
+        "c3a2320c-19f1-4051-aa5f-85fc58d39ac9",
+        "e74252e6-558c-49c1-aa13-99be2cc59585"])
+    reporter.get_report()
 
 if __name__ == "__main__":
     main()
-    
-
-
-
-# def run_reporter_etl(my_config):
-#     trade_date = my_config.get('production', 'processing_date')
-#     reporter = Reporter(spark, my_config)
-
-#     tracker = Tracker('analytical_etl', my_config)
-#     try:
-#         # First, 
-
-#         reporter.report(spark, trade_date, eod_dir)
-#         tracker.update_job_status("success")
-#     except Exception as e:
-#         print(e)
-#         tracker.update_job_status("failed")
-#     return

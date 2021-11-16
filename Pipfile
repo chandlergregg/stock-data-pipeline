@@ -4,12 +4,13 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-pyspark = "*"
 jupyter = "*"
-postgres = "*"
 psycopg2-binary = "*"
 wheel = "*"
 setuptools = "*"
+psycopg2 = "*"
+databricks-connect = "==9.1"
+azure-storage-blob = "*"
 
 [dev-packages]
 

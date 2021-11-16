@@ -19,7 +19,7 @@ class ConfigReader:
         if parser.has_section(self.section):
             params = parser.items(self.section)
             for param in params:
-                config[param[0]] = param[1]
+                config[param[0]] = param[1].strip('"')
         else:
             raise Exception(f"Section {self.section} not found in the {self.filename} file")
         
